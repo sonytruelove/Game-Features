@@ -1,0 +1,62 @@
+function init(self)
+	self.position=go.get_position("teleport")
+	self.position1=go.get_position("teleport1")
+	self.teleport=true
+	self.teleport1=true
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id==hash("teleportation") then print(message.own_group) self.teleport1=false self.teleport=false 	timer.delay(1.1, false, function() self.teleport=true self.teleport1=true end) end
+	if message_id == hash("contact_point_response") then
+		print(self.teleport)
+		if message.other_group==hash("player") then 
+			if message.own_group==hash("teleport") and 	self.teleport then
+				self.teleport=false 
+				msg.post("teleport1","teleportation")
+		
+				timer.delay(1, false, function() self.teleport=true end)
+				print("go to"..self.position1)
+				go.set_position(self.position1,message.other_id)
+			elseif message.own_group==hash("teleport1") and self.teleport1 then
+				self.teleport1=false 
+				timer.delay(1, false, function() self.teleport1=true  end)
+				msg.post("teleport","teleportation")
+				go.set_position(self.position,message.other_id) end
+			
+	end end end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
