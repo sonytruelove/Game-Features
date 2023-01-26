@@ -1,0 +1,49 @@
+function init(self)
+	defglot.set_text(gui.get_node("levels"),"LEVELS")
+	defglot.autofit_text(gui.get_node("levels"),2)
+	self.complete_level=defsave.get("config", "complete")
+	msg.post(".", "acquire_input_focus")
+	for i=1, self.complete_level+1 do 
+		local node=gui.get_node("level"..i)
+		gui.set_texture(node, "main")
+		gui.play_flipbook(node, "button (4)")
+	end
+
+	--msg.post("main:/loader#level"..complete_level+1,"load")
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("proxy_loaded") and sender.fragment==hash("level1") then
+	msg.post(sender, "acquire_input_focus") end
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.pressed then
+		for i=1,self.complete_level+1 do
+		if gui.pick_node(gui.get_node("level"..i), action.x, action.y) then
+			msg.post("main:/loader#level"..i,"load")
+			msg.post("main:/loader#level"..i,"init")
+			msg.post("main:/loader#level"..i,"enable")
+			msg.post("main:/loader#menu","unload")
+		 end 
+	end
+		 end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
